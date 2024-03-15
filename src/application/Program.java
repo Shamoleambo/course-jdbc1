@@ -1,9 +1,11 @@
 package application;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import db.DB;
 
@@ -11,22 +13,26 @@ public class Program {
 
 	public static void main(String[] args) {
 		Connection conn = null;
-		Statement st = null;
-		ResultSet rs = null;
+		PreparedStatement st = null;
 
 		try {
 			conn = DB.getConnection();
-			st = conn.createStatement();
-			rs = st.executeQuery("select * from department");
+			st = conn.prepareStatement("INSERT INTO seller (Name, Email, BirthDate, BaseSalary, DepartmentId)"
+					+ "VALUES (?, ?, ?, ?, ?)");
+			st.setString(1, "Mano Maluco");
+			st.setString(2, "mano@mail.com");
+			st.setDate(3, new Date(
+					LocalDate.of(1985, 2, 12).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()));
+			st.setDouble(4, 45000.99);
+			st.setInt(5, 1);
 
-			while (rs.next()) {
-				System.out.println(rs.getInt("Id") + ", " + rs.getString("Name"));
-			}
+			int rowsAffected = st.executeUpdate();
+			System.out.println("Done. Rows affected: " + rowsAffected);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			DB.closeStatement(st);
-			DB.closeResultSet(rs);
+			DB.closeConnection();
 		}
 
 	}
