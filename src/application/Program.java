@@ -19,6 +19,7 @@ public class Program {
 
 		try {
 			conn = DB.getConnection();
+			/*
 			st = conn.prepareStatement(
 					"INSERT INTO seller (Name, Email, BirthDate, BaseSalary, DepartmentId)" + "VALUES (?, ?, ?, ?, ?)",
 					Statement.RETURN_GENERATED_KEYS);
@@ -28,7 +29,10 @@ public class Program {
 					LocalDate.of(1994, 7, 18).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()));
 			st.setDouble(4, 200000.98);
 			st.setInt(5, 1);
-
+			*/
+			
+			st = conn.prepareStatement("INSERT INTO department (Name) VALUES ('Amor'), ('Paz')", Statement.RETURN_GENERATED_KEYS);
+			
 			int rowsAffected = st.executeUpdate();
 			if (rowsAffected > 0) {
 				ResultSet rs = st.getGeneratedKeys();
